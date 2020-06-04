@@ -1,0 +1,15 @@
+Model
+{
+for (i in 1:n) {
+	y[i]~ dbern(p[i])
+	logit(p[i]) <- alpha  
+	}
+alpha ~ dnorm(0,1.0E-6)
+}
+Data
+
+list(n=28,
+y = c(0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1))
+
+Inits
+list(alpha=0)

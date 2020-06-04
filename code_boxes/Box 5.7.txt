@@ -1,0 +1,6 @@
+for( i in 1 : N ) {
+	dummy[i] <- 0
+	dummy[i] ~ dloglik(logLike[i])
+	logLike[i] <- log(c) - log(b) + 
+	(c-1)*( log(y[i]-a) - log(b) ) - pow( ((y[i]-a)/b) , c)
+}

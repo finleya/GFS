@@ -1,0 +1,271 @@
+MODEL 
+# constant variance per diet
+###################################
+# sampling model
+{
+for( i in 1 : N1 ) {
+				y[ i ] ~ dnorm(mu[i], tau[ diet[i] ])
+				mu[ i ] <- alpha1[rat[i]] + ( beta1[rat[i]] * x[i] )
+}	
+
+for( i in (N1+1) : (N1+N2) ) {
+				y[ i ] ~ dnorm(mu[i], tau[ diet[i] ])
+				mu[ i ] <- alpha2[rat[i]] + ( beta2[rat[i]] * x[i] )
+}
+
+for( i in (N1+N2+1) :(N1+N2+N3) ) {
+				y[ i ] ~ dnorm(mu[i], tau[ diet[i] ])
+				mu[ i ] <- alpha3[rat[i]] + ( beta3[rat[i]] * x[i] )
+} 	
+
+###################################
+# priors	
+for (j in 1:8) {
+		alpha1[j] ~ dnorm(alpha.mean[1], alpha.tau[1])
+		beta1[j] ~ dnorm(beta.mean[1], beta.tau[1])
+#		beta1[j] ~ dnorm(beta.mean[1], beta.tau[1])T(0,)
+}
+
+	for (j in 1:4){
+		alpha2[j] ~ dnorm(alpha.mean[2], alpha.tau[2])
+		beta2[j] ~ dnorm(beta.mean[2], beta.tau[2])
+#		beta2[j] ~ dnorm(beta.mean[2], beta.tau[2])T(0,)
+		alpha3[j] ~ dnorm(alpha.mean[3], alpha.tau[3])
+		beta3[j] ~ dnorm(beta.mean[3], beta.tau[3])
+#		beta3[j] ~ dnorm(beta.mean[3], beta.tau[3])T(0,)
+		}
+		for (i in 1:ndiet) {	
+		tau[i] ~ dgamma(0.001,0.001)
+		sigma[i] <- 1 / sqrt(tau[i])
+		}
+###################################
+# hyperpriors	
+for (i in 1:ndiet) {	
+		alpha.mean[i] ~ dnorm(mu.alpha, prec.alpha)         # parameter of interest
+		beta.mean[i] ~ dnorm(mu.beta, prec.beta)              # parameter of interest
+#		beta.mean[i] ~ dnorm(mu.beta, prec.beta)T(0,)    # parameter of interest
+				
+		alpha.sig[i] ~ dunif(1.0E-6, 500)
+		alpha.tau[i] <- 1/(alpha.sig[i] * alpha.sig[i])
+		
+		beta.sig[i] ~ dunif(1.0E-6, 500)
+		beta.tau[i] <- 1/(beta.sig[i] * beta.sig[i])
+}
+
+###################################
+# hyper-hyperpriors	
+
+mu.alpha ~ dnorm(0.0,1.0E-6)
+mu.beta ~ dnorm(0.0,1.0E-6)
+#mu.beta ~ dnorm(0.0,1.0E-6)T(0,)
+sig.alpha ~ dunif(1.0E-6, 1000)
+prec.alpha <- 1/(sig.alpha * sig.alpha)
+sig.beta ~ dunif(1.0E-6, 1000)
+prec.beta <- 1/(sig.beta * sig.beta)
+
+diff_a[1] <- alpha.mean[1]-alpha.mean[2]
+diff_a[2] <- alpha.mean[1]-alpha.mean[3]
+diff_a[3] <- alpha.mean[2]-alpha.mean[3]
+
+diff_b[1]<- beta.mean[1]-beta.mean[2]
+diff_b[2]<- beta.mean[1]-beta.mean[3]
+diff_b[3] <- beta.mean[2]-beta.mean[3]
+}
+
+INITS
+
+list(alpha1=c(0,0,0,0,0,0,0,0), 
+     beta1=c(0,0,0,0,0,0,0,0),  
+	 alpha2=c(0,0,0,0),beta2=c(0,0,0,0),
+	 alpha3=c(0,0,0,0),beta3=c(0,0,0,0),
+     alpha.mean = c(0,0,0), beta.mean  = c(0,0,0),			
+	 tau = c(1,1,1), 
+	 alpha.sig = c(1,1,1), beta.sig=c(1,1,1),
+	 mu.alpha = 0, mu.beta = 0,
+	 sig.alpha = 1, sig.beta = 1)
+
+
+DATA
+
+list(N1=88, N2=44, N3=44, ndiet = 3)
+
+    y[]  x[] diet[] rat[]
+   240  1    1 1
+   250  8    1 1
+   255 15    1 1
+   260 22    1 1
+   262 29    1 1
+   258 36    1 1
+   266 43    1 1
+   266 44    1 1
+   265 50    1 1
+  272 57    1 1
+  278 64    1 1
+  225  1    1 2
+  230  8    1 2
+  230 15    1 2
+  232 22    1 2
+  240 29    1 2
+  240 36    1 2
+  243 43    1 2
+  244 44    1 2
+  238 50    1 2
+  247 57    1 2
+  245 64    1 2
+  245  1    1 3
+  250  8    1 3
+  250 15    1 3
+  255 22    1 3
+  262 29    1 3
+  265 36    1 3
+  267 43    1 3
+  267 44    1 3
+  264 50    1 3
+  268 57    1 3
+  269 64    1 3
+  260  1    1 4
+  255  8    1 4
+  255 15    1 4
+  265 22    1 4
+  265 29    1 4
+  268 36    1 4
+  270 43    1 4
+  272 44    1 4
+  274 50    1 4
+  273 57    1 4
+  275 64    1 4
+  255  1    1 5
+  260  8    1 5
+  255 15    1 5
+  270 22    1 5
+  270 29    1 5
+  273 36    1 5
+  274 43    1 5
+  273 44    1 5
+  276 50    1 5
+  278 57    1 5
+  280 64    1 5
+  260  1    1 6
+  265  8    1 6
+  270 15    1 6
+  275 22    1 6
+  275 29    1 6
+  277 36    1 6
+  278 43    1 6
+  278 44    1 6
+  284 50    1 6
+  279 57    1 6
+  281 64    1 6
+  275  1    1 7
+  275  8    1 7
+  260 15    1 7
+  270 22    1 7
+  273 29    1 7
+  274 36    1 7
+  276 43    1 7
+  271 44    1 7
+  282 50    1 7
+  281 57    1 7
+  284 64    1 7
+  245  1    1 8
+  255  8    1 8
+  260 15    1 8
+  268 22    1 8
+  270 29    1 8
+  265 36    1 8
+  265 43    1 8
+  267 44    1 8
+  273 50    1 8
+  274 57    1 8
+  278 64    1 8
+  410  1    2 1
+  415  8    2 1
+  425 15    2 1
+  428 22    2 1
+  438 29    2 1
+  443 36    2 1
+  442 43    2 1
+  446 44    2 1
+  456 50    2 1
+  468 57    2 1
+  478 64    2 1
+ 405  1    2 2
+ 420  8    2 2
+ 430 15    2 2
+ 440 22    2 2
+ 448 29    2 2
+ 460 36    2 2
+ 458 43    2 2
+ 464 44    2 2
+ 475 50    2 2
+ 484 57    2 2
+ 496 64    2 2
+ 445  1    2 3
+ 445  8    2 3
+ 450 15    2 3
+ 452 22    2 3
+ 455 29    2 3
+ 455 36    2 3
+ 451 43    2 3
+ 450 44    2 3
+ 462 50    2 3
+ 466 57    2 3
+ 472 64    2 3
+ 555  1    2 4
+ 560  8    2 4
+ 565 15    2 4
+ 580 22    2 4
+ 590 29    2 4
+ 597 36    2 4
+ 595 43    2 4
+ 595 44    2 4
+ 612 50    2 4
+ 618 57    2 4
+ 628 64    2 4
+ 470  1    3 1
+ 465  8    3 1
+ 475 15    3 1
+ 485 22    3 1
+ 487 29    3 1
+ 493 36    3 1
+ 493 43    3 1
+ 504 44    3 1
+ 507 50    3 1
+ 518 57    3 1
+ 525 64    3 1
+ 535  1    3 2
+ 525  8    3 2
+ 530 15    3 2
+ 533 22    3 2
+ 535 29    3 2
+ 540 36    3 2
+ 525 43    3 2
+ 530 44    3 2
+ 543 50    3 2
+ 544 57    3 2
+ 559 64    3 2
+ 520  1    3 3
+ 525  8    3 3
+ 530 15    3 3
+ 540 22    3 3
+ 543 29    3 3
+ 546 36    3 3
+ 538 43    3 3
+ 544 44    3 3
+ 553 50    3 3
+ 555 57    3 3
+ 548 64    3 3
+ 510  1    3 4
+ 510  8    3 4
+ 520 15    3 4
+ 515 22    3 4
+ 530 29    3 4
+ 538 36    3 4
+ 535 43    3 4
+ 542 44    3 4
+ 550 50    3 4
+ 553 57    3 4
+ 569 64    3 4
+END
+
+

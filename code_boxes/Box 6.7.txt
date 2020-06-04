@@ -1,0 +1,65 @@
+MODEL 
+{
+for( i in 1 : K ) {
+			for( j in 1 : N ) {
+				Y[i , j] ~ dnorm(mu[i , j], tau)
+				mu[i , j] <- alpha[i] + beta[i] * x[j]			
+				Z[i , j] ~ dnorm(theta[i], prec)
+			}			
+}
+for (i in 1:K) {
+		alpha[i] ~ dnorm(alpha.mean, alpha.tau)
+		beta[i] ~ dnorm(beta.mean, beta.tau)T(0,)
+		theta[i] ~ dnorm(theta.mean, theta.prec)
+}
+
+for (i in 1:K) {
+	for (j in 1 : N) {
+		numerator[i,j] <- (Y[i, j] - mu[i, j])*(Y[i, j] - mu[i, j])
+		denominator[i,j] <- (Y[i, j] - theta[i])*(Y[i, j] - theta[i])
+		}
+	}	
+rsq <- 1 - ( sum(numerator[, ])  / sum(denominator[, ]) )
+	
+tau ~ dgamma(0.001,0.001)
+sigma <- 1 / sqrt(tau)	
+alpha.mean ~ dnorm(0.0,1.0E-6)	   
+alpha.sigma ~ dunif(1.0E-6, 500)
+alpha.tau <- 1/(alpha.sigma * alpha.sigma)
+beta.mean ~ dnorm(0.0,1.0E-6)T(0,)
+beta.sigma ~ dunif(1,100)
+beta.tau <- 1/(beta.sigma * beta.sigma)
+theta.mean ~ dnorm(0.0, 1.0E-6)
+prec ~ dgamma(0.001, 0.001)
+theta.sig ~ dunif(1,100)
+theta.prec <- 1/(theta.sig*theta.sig)
+}
+INITS
+
+list(  alpha = c(1,1,1,1),
+		beta  = c(1,1,1,1),			
+		tau = 1, 
+		theta=c(1,1,1,1), theta.mean=1, 
+		theta.sig = 1, prec = 1,
+		alpha.mean = 1, beta.mean = 1,
+		alpha.sigma = 1, beta.sigma = 1)
+
+DATA
+
+list(
+x = c(1,  8, 15, 22, 29, 36, 43, 44, 50, 57, 64), K=4, N=11,
+Y = structure(
+        .Data=c(410, 415, 425, 428, 438, 443, 442, 446, 456, 468, 478, 
+                       405, 420, 430, 440, 448, 460, 458, 464, 475, 484, 496, 
+                       445, 445, 450, 452, 455, 455, 451, 450, 462, 466, 472, 
+                       555, 560, 565, 580, 590, 597, 595, 595, 612, 618, 628),
+         .Dim=c(4,11)),
+Z = structure(
+        .Data=c(410, 415, 425, 428, 438, 443, 442, 446, 456, 468, 478, 
+                       405, 420, 430, 440, 448, 460, 458, 464, 475, 484, 496, 
+                       445, 445, 450, 452, 455, 455, 451, 450, 462, 466, 472, 
+                       555, 560, 565, 580, 590, 597, 595, 595, 612, 618, 628),
+         .Dim=c(4,11))
+)
+
+

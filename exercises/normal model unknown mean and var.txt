@@ -1,0 +1,31 @@
+Model
+	{	
+		tau_mu <- 1/10000  # Precision is the inverse of the variance
+		a <- 0.001
+		b <- 0.001
+		for( i in 1 : N ) {			
+				Y[i] ~ dnorm(mu, tau)
+			}		
+		mu ~ dnorm(0, tau_mu)
+		tau ~ dgamma(a, b)
+		sigma <- 1/sqrt(tau)
+		var <- sigma*sigma	 		
+	}
+	
+Data 
+	#  15 deer weights
+	   list( Y = c(
+     50,  40,  43,  44,  45,  
+     44,  44,  51,  50,  51,  
+     52,  54,  39,  48,  43),
+     N=15 )  
+
+Initial Values 
+
+# starting point 1:
+list(mu=500, tau=0.1)
+
+# starting point 2:
+list(mu=50, tau=2)
+
+

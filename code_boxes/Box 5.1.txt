@@ -1,0 +1,36 @@
+model 
+	{
+		for( i in 1 : N ) {
+#				y[ i ] ~ dnorm( mu[yr[i]], tau[yr[i]] )    # model a
+#				y[ i ] ~ dnorm( mu[yr[i]], tau )          # model b
+#				y[ i ] ~ dnorm( mu, tau[yr[i]] )          # model c
+				y[ i ] ~ dnorm( mu, tau)                    # model d
+		}
+#		for( j in 1 : 2 ) {                                       # turn on loop if either parameter varies by year
+#		mu[ j ] ~ dnorm(0.0,1.0E-6)                 # models a & b
+#		tau[ j ] ~ dgamma(0.001,0.001)          # models a & c
+#		sigma[ j ] <- 1 / sqrt(tau[ j ])
+#		}
+
+		mu ~ dnorm(0.0,1.0E-6)                        # models c & d
+		tau ~ dgamma(0.001,0.001)                 # models b & d
+		sigma <- 1 / sqrt(tau)		
+	}
+	
+Inits 
+	
+    	list(mu=c(0, 0), tau=c(1,1))                   # model a
+		list(mu=c(0, 0), tau=1)                           # model b
+		list(mu=0, tau=c(1,1))		                    # model c
+		list(mu=0, tau=1)                                    # model d
+		
+		
+Data 
+ 
+list(y = c(37, 35, 46, 48, 37, 41, 44, 51,
+               41, 48, 41, 43, 43, 31, 35, 42, 
+               43, 43, 42, 50, 50, 55, 33, 39),
+      yr = c(1,1,1,1,1,1,1,1,
+                 2,2,2,2,2,2,2,2,
+                 2,2,2,2,2,2,2,2), N = 24 )
+						

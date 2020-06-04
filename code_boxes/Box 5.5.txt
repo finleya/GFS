@@ -1,0 +1,17 @@
+# Test if mean weight of adult does in 2008 differed from mean weight in 1994
+Model 
+	{
+		for( i in 1 : N ) {
+				y[i] ~ dnorm(mu, tau)
+		}
+		mu ~ dnorm(0.0, 1.0E-6)
+		tau ~ dgamma(0.001, 0.001)
+		sigma <- 1 / sqrt(tau)
+	}	
+Inits 
+	list(mu=0, tau=1)				
+Data 
+ 
+list(y = c(41, 48, 41, 43, 43, 31, 35, 42, 
+               43, 43, 42, 50, 50, 55, 33, 39),
+    N = 16 )

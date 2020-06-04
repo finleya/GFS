@@ -1,0 +1,32 @@
+MODEL 1 - Exponential	
+
+	{
+		for( i in 1 : N ) {
+			y[i] ~ dexp(lambda)
+		}		
+	lambda ~ dunif(0,10)		
+	}
+	
+
+MODEL 2 - Weibull
+	
+{
+		for( i in 1 : N ) {
+			y[i]   ~ dweib(nu, gamma)
+		}			
+	nu ~ dunif(0,10)
+	gamma ~ dunif(0,10)		
+	}
+	
+DATA
+list(y=c(  
+    2,  4,   4,   4,   4,   4,   5,   5,   5,   6,   6,   6,   7,   7,   8,   8,   8,   8,   9,
+    9,   9,   9,   9,   9,   9,  10,  11,  11,  12,  12,  13,  13,  13,  13,  13,  14,  14,  14,
+  14,  15,  16,  16,  17,  19,  20,  21,  24,  25,  25,  30,  30,  31,  31,  31,  31,  31,  31,
+  33,  33,  34,  36,  37,  39,  41,  44,  45,  47,  48,  51,  52,  52,  53,  53,  53,  53,  53,
+  57,  60,  62,  76,  77, 164), N=82))
+INITS
+Weibull:
+     list(nu=1, gamma=1)
+Exponential:
+     list(lambda=0.1)
