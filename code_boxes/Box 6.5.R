@@ -2,7 +2,7 @@ rm(list=ls())
 #
 #  Be sure to set working directory!!
 #
-setwd(" ")
+setwd("//Users//edwingreen//Documents//Bayes text")
 v = trees$Volume
 d = trees$Girth
 h = trees$Height
@@ -11,7 +11,7 @@ Nobs = length(d) # number of observations
 library("bayesplot")
 library("coda")
 library("loo")
-k <-15000  # posterior sample size
+k =15000  # posterior sample size
 # read posterior samples
 # set to directory where posterior samples are stored
 #setwd("  ") 
@@ -22,8 +22,16 @@ beta = y[(k+1):(2*k),2]
 rsq = y[((2*k)+1):(3*k),2]
 sigma = y[((3*k)+1):(4*k),2]
 rm(y)
-param = cbind(alpha,beta,sigma)
-mcmc_dens(param)
+par(mfrow=c(1,3))
+a = density(alpha)
+b = density(beta)
+c = density(sigma)
+plot(a,main=" ",xlab=expression(alpha),
+     ylab="density",lwd=1)
+plot(b,main=" ",xlab=expression(beta),
+     ylab="density",lwd=1)
+plot(c,main=" ",xlab=expression(sigma),
+     ylab="density",lwd=1)
 vrep=matrix(0,nrow=k,ncol=Nobs)
 for (i in 1:k){
   mu = alpha[i] + beta[i]*(d2h)    

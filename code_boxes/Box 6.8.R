@@ -17,7 +17,6 @@ Nperrat = Nobs/Nrats
 k = 25000  # k = posterior sample size
 alpha = matrix(0,nrow=k,ncol=Nrats)
 beta = matrix(0,nrow=k,ncol=Nrats)
-rsq = matrix(0,nrow=k,ncol=1)
 sigma = matrix(0,nrow=k,ncol=1)
 alpha_mu = rep(0,k)
 alpha_sig = rep(0,k)
@@ -39,8 +38,11 @@ beta[,3] = z[((8*k)+1):(9*k),2]
 beta[,4] = z[((9*k)+1):(10*k),2]
 beta_mu[] = z[((10*k)+1):(11*k),2]
 beta_sig[]= z[((11*k)+1):(12*k),2]
-sigma = z[((12*k)+1):(13*k),2]
+rsq[] = z[((12*k)+1):(13*k),2]
+sigma = z[((13*k)+1):(14*k),2]
 rm(z)
+
+mean(rsq)
 
 yrep1=matrix(0,nrow=k,ncol=Nperrat)
 yrep2=matrix(0,nrow=k,ncol=Nperrat)
@@ -57,7 +59,7 @@ for (i in 1:k){
   mu4 = alpha[i,4] + beta[i,4]*x[34:44]  
   yrep4[i,] = rnorm(n=Nperrat,mean=mu4,sd=sigma[i])
 }
-  yrep = cbind(yrep1,yrep2,yrep3,yrep4)
+yrep = cbind(yrep1,yrep2,yrep3,yrep4)
 
 color_scheme_set("brightblue")
 ind = sample(1:k, 50, replace=FALSE)
